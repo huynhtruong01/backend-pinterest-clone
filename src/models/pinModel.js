@@ -13,11 +13,10 @@ const pinSchema = new mongoose.Schema(
             type: String,
             required: [true, 'A pin must have image'],
         },
-        link: {
-            type: String,
-        },
+        link: String,
         title: {
             type: String,
+            required: [true, 'Please enter title'],
             trim: true,
         },
         description: {

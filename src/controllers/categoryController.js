@@ -1,12 +1,18 @@
 const Category = require('../models/categoryModel')
-const { getAll, getOne, createOne, deleteOne } = require('./handleFactory')
+const {
+    getAll,
+    createOne,
+    deleteOne,
+    updateOneBySlug,
+    getOneBySlug,
+} = require('./handleFactory')
 
 exports.getAllCategories = getAll(Category)
 
-exports.getCategory = getOne(Category)
+exports.getCategory = getOneBySlug(Category)
 
 exports.createCategory = createOne(Category)
 
-exports.updateCategory = updateOne(Category)
+exports.updateCategory = updateOneBySlug(Category)
 
 exports.deleteCategory = deleteOne(Category)

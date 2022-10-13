@@ -28,6 +28,20 @@ exports.getAll = (Model) =>
 
 exports.getOne = (Model) =>
     catchAsync(async (req, res, next) => {
+        const doc = await Model.findById(req.params.id)
+
+        if (!doc) return next(new AppError('Not found data with ID.', 404))
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                data: doc,
+            },
+        })
+    })
+
+exports.getOneBySlug = (Model) =>
+    catchAsync(async (req, res, next) => {
         const doc = await Model.findOne({ slug: req.params.slug })
 
         if (!doc) return next(new AppError('Not found data with ID.', 404))
@@ -54,6 +68,27 @@ exports.createOne = (Model) =>
 
 exports.updateOne = (Model) =>
     catchAsync(async (req, res, next) => {
+        console.log(req.params.id)
+        const updateDoc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        })
+
+        console.log(updateDoc)
+
+        if (!updateDoc) return next(new AppError('Not found data with ID.', 404))
+
+        res.status(201).json({
+            status: 'success',
+            data: {
+                data: updateDoc,
+            },
+        })
+    })
+
+exports.updateOneBySlug = (Model) =>
+    catchAsync(async (req, res, next) => {
+        console.log(req.params.id)
         const updateDoc = await Model.findOneAndUpdate(
             { slug: req.params.slug },
             req.body,
@@ -62,6 +97,8 @@ exports.updateOne = (Model) =>
                 runValidators: true,
             }
         )
+
+        console.log(updateDoc)
 
         if (!updateDoc) return next(new AppError('Not found data with ID.', 404))
 

@@ -10,6 +10,8 @@ const {
     unsavePin,
     likePin,
     unlikePin,
+    uploadPin,
+    resizeImagePin,
 } = require('../controllers/pinController')
 const router = express.Router()
 
@@ -22,8 +24,11 @@ router.route('/unsave').post(unsavePin)
 router.route('/like').post(likePin)
 router.route('/unlike').post(unlikePin)
 
-router.route('/').get(getAllPins).post(createPin)
-router.route('/:slug').get(getPin).patch(updatePin)
+router
+    .route('/')
+    .get(getAllPins)
+    .post(uploadPin.single('image'), resizeImagePin, createPin)
+router.route('/:id').get(getPin).patch(updatePin)
 
 // permission for admin
 router.use(restrictTo('admin'))

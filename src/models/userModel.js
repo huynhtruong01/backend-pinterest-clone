@@ -121,6 +121,8 @@ const userSchema = new mongoose.Schema(
     }
 )
 
+userSchema.index({ username: 1 })
+
 userSchema.pre('save', async function (next) {
     this.slug = slugify(this.username, {
         lower: true,

@@ -45,6 +45,9 @@ app.use('/api', rateLimit(rateLimitingOptions))
 
 app.use(cors())
 
+// static file
+app.use(express.static('public'))
+
 // connect db
 connectDB()
 

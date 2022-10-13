@@ -19,6 +19,8 @@ const {
     followUser,
     unfollowUser,
     getMe,
+    uploadUser,
+    resizeUser,
 } = require('../controllers/userController')
 const router = express.Router()
 
@@ -43,7 +45,17 @@ router.route('/unfollow').post(unfollowUser)
 // permission for admin
 router.use(restrictTo('admin'))
 
-router.route('/').get(getAllUsers).post(createUser)
+router
+    .route('/')
+    .get(getAllUsers)
+    .post(
+        uploadUser.fields([
+            { name: 'avatar', maxCount: 1 },
+            { name: 'avatarCover', maxCount: 1 },
+        ]),
+        resizeUser,
+        createUser
+    )
 router.route('/:slug').get(getUser).patch(updateUser)
 router.route('/:id').delete(deleteUser)
 

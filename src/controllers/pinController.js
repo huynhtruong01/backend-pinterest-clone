@@ -1,9 +1,44 @@
+const multer = require('multer')
 const Pin = require('../models/pinModel')
 const User = require('../models/userModel')
 const AppError = require('../utils/AppError')
 const catchAsync = require('../utils/catchAsync')
 const { getAll, getOne, createOne, updateOne, deleteOne } = require('./handleFactory')
+const sharp = require('sharp')
 
+// upload image for pin: image
+const storagePin = multer.memoryStorage()
+const multerFilterPin = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true)
+    } else {
+        cb(
+            new AppError(
+                'Must not file image to upload. Please choose image to upload.',
+                400
+            ),
+            false
+        )
+    }
+}
+
+exports.uploadPin = multer({ storage: storagePin, fileFilter: multerFilterPin })
+
+// resize image pin
+exports.resizeImagePin = catchAsync(async (req, res, next) => {
+    const filename = `pin-${req.user.id}-${Date.now()}.jpeg`
+
+    await sharp(req.file.buffer)
+        .resize(508)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/images/pins/${filename}`)
+
+    req.body.image = filename
+    next()
+})
+
+// GET, POST, PATCH, DELETE
 exports.getAllPins = getAll(Pin)
 
 exports.getPin = getOne(Pin)
